@@ -1,42 +1,67 @@
-const router = require('express').Router();
+const Router = require('koa-router');
 const boardsService = require('./board.service');
 
-router.route('/').get(async (req, res) => {
-  const boards = await boardsService.getAll();
-  res.json(boards);
-});
+const router = new Router();
 
-router.route('/:id').get(async (req, res) => {
-  const { id } = req.params;
-  const board = await boardsService.getBoard(id);
-  if (board) {
-    res.json(board);
-  } else {
-    res.sendStatus(404);
-  }
-});
+router
+  .get('/', async (ctx) => {
+    try {
+      const boards = await boardsService.getAll();
+      ctx.body = boards;
+    } catch (error) {
+      ctx.status = 500;
+      ctx.body = 'Internal server error';
+    }
+  })
+  .get('/:id', async (ctx) => {
+    try {
+      const { id } = ctx.params;
+      const board = await boardsService.getBoard(id);
+      if (board) {
+        ctx.body = board;
+      } else {
+        ctx.status = 404;
+      }
+    } catch (error) {
+      ctx.status = 500;
+      ctx.body = 'Internal server error';
+    }
+  })
+  .post('/', async (ctx) => {
+    try {
+      const { title, columns } = ctx.request.body;
+      const board = await boardsService.createBoard({ title, columns });
+      ctx.status = 201;
+      ctx.body = board;
+    } catch (error) {
+      ctx.status = 500;
+      ctx.body = 'Internal server error';
+    }
+  })
+  .put('/:id', async (ctx) => {
+    try {
+      const { id } = ctx.params;
+      const { body } = ctx.request;
+      const board = await boardsService.updateBoard(id, body);
+      ctx.body = board;
+    } catch (error) {
+      ctx.status = 500;
+      ctx.body = 'Internal server error';
+    }
+  })
+  .delete('/:id', async (ctx) => {
+    try {
+      const { id } = ctx.params;
+      const result = await boardsService.deleteBoard(id);
+      if (result) {
+        ctx.status = 204;
+      } else {
+        ctx.status = 404;
+      }
+    } catch (error) {
+      ctx.status = 500;
+      ctx.body = 'Internal server error';
+    }
+  });
 
-router.route('/').post(async (req, res) => {
-  const { title, columns } = req.body;
-  const board = await boardsService.createBoard({ title, columns });
-  res.status(201).json(board);
-});
-
-router.route('/:id').put(async (req, res) => {
-  const { id } = req.params;
-  const { body } = req;
-  const board = await boardsService.updateBoard(id, body);
-  res.json(board);
-});
-
-router.route('/:id').delete(async (req, res) => {
-  const { id } = req.params;
-  const result = await boardsService.deleteBoard(id);
-  if (result) {
-    res.sendStatus(204);
-  } else {
-    res.status(404).json('Not Found');
-  }
-});
-
-module.exports = router;
+module.exports = () => router.routes();
