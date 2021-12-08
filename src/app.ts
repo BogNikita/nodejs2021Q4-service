@@ -15,12 +15,10 @@ const spec = YAML.load(path.join(__dirname, '../doc/api.yaml')) as
   | Record<string, unknown>
   | undefined;
 
-if (spec) {
-  router.get(
-    '/doc',
-    koaSwagger({ routePrefix: false, swaggerOptions: { spec } })
-  );
-}
+router.get(
+  '/doc',
+  koaSwagger({ routePrefix: false, swaggerOptions: { spec } })
+);
 
 router.use('/users', userRouter.routes());
 router.use('/boards', boardRouter.routes());
