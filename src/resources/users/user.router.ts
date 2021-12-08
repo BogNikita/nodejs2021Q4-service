@@ -1,23 +1,23 @@
-const Router = require('koa-router');
-const User = require('./user.model');
-const usersService = require('./user.service');
+import Router from 'koa-router';
+import { IUser, User } from './user.model';
+import usersService from './user.service';
 
 const router = new Router();
 
-router
-  .get('/', async (ctx) => {
+export default router
+  .get('/', (ctx) => {
     try {
-      const users = await usersService.getAll();
-      ctx.body = users.map(User.toResponse);
+      const users = usersService.getAll();
+      ctx.body = users.map((item) => User.toResponse(item));
     } catch (error) {
       ctx.status = 500;
       ctx.body = 'Internal server error';
     }
   })
-  .get('/:id', async (ctx) => {
+  .get('/:id', (ctx) => {
     try {
       const { id } = ctx.params;
-      const user = await usersService.getUser(id);
+      const user = usersService.getUser(id);
       if (user) {
         ctx.status = 200;
         ctx.body = User.toResponse(user);
@@ -29,10 +29,10 @@ router
       ctx.body = 'Internal server error';
     }
   })
-  .post('/', async (ctx) => {
+  .post('/', (ctx) => {
     try {
-      const { name, login, password } = ctx.request.body;
-      const user = await usersService.createUser({ name, login, password });
+      const { name, login, password } = <IUser>ctx.request.body;
+      const user = usersService.createUser({ name, login, password });
       ctx.status = 201;
       ctx.body = User.toResponse(user);
     } catch (error) {
@@ -40,21 +40,21 @@ router
       ctx.body = 'Internal server error';
     }
   })
-  .put('/:id', async (ctx) => {
+  .put('/:id', (ctx) => {
     try {
       const { id } = ctx.params;
-      const { body } = ctx.request;
-      const user = await usersService.updateUser(id, body);
+      const data = <IUser>ctx.request.body;
+      const user = usersService.updateUser(id, data);
       ctx.body = User.toResponse(user);
     } catch (error) {
       ctx.status = 500;
       ctx.body = 'Internal server error';
     }
   })
-  .delete('/:id', async (ctx) => {
+  .delete('/:id', (ctx) => {
     try {
       const { id } = ctx.params;
-      const result = await usersService.deleteUser(id);
+      const result = usersService.deleteUser(id);
       if (result) {
         ctx.status = 204;
       } else {
@@ -65,5 +65,3 @@ router
       ctx.body = 'Internal server error';
     }
   });
-
-module.exports = () => router.routes();
