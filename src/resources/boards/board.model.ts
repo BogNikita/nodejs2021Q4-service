@@ -6,6 +6,9 @@ export interface IBoard {
   columns: string;
 }
 
+/**
+ * Board class create new board
+ */
 export class Board implements IBoard {
   id: string;
 
@@ -13,8 +16,14 @@ export class Board implements IBoard {
 
   columns: string;
 
-  constructor({ id = v1(), title = 'Board', columns = '1' } = {}) {
-    this.id = id;
+  /**
+   * @constructor create new user
+   * @param board is object include field:
+   * title - string default "Task"
+   * columns- string
+   */
+  constructor({ title = 'Board', columns = '1' } = {}) {
+    this.id = v1();
     this.title = title;
     this.columns = columns;
   }

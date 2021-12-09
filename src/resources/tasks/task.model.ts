@@ -9,7 +9,9 @@ export interface ITask {
   id?: string;
   userId?: null | string;
 }
-
+/**
+ * Task class create new task
+ */
 export class Task implements ITask {
   id: string;
 
@@ -25,6 +27,15 @@ export class Task implements ITask {
 
   userId?: null | string;
 
+  /**
+   * @constructor create new task
+   * @param task is object include field:
+   * title - string default "Task"
+   * order - string default "desc"
+   * boardId - string
+   * userId - string
+   * columnId - string
+   */
   constructor({
     title = 'Task',
     order = 'desc',
