@@ -27,8 +27,8 @@ router.use('/users', userRouter.routes());
 router.use('/boards', boardRouter.routes());
 router.use('/boards', tasksRouter.routes());
 
-app.use(bodyparser());
 app.use(koaBody());
+app.use(bodyparser());
 app.use(logger);
 app.use(router.routes());
 app.use(router.allowedMethods());

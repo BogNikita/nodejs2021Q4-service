@@ -4,7 +4,7 @@ import { Logger } from '../logger';
 export default async (ctx: Context, next: () => Promise<void>) => {
   await next();
   const { url, method, querystring: query } = ctx.request;
-  const body = ctx.request;
+  const body = ctx.request.body as object;
   const { status, message } = ctx.response;
   const params = ctx.params as object;
 
