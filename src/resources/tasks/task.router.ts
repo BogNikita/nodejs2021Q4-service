@@ -12,7 +12,7 @@ export default router
       ctx.body = tasks;
     } catch (error) {
       ctx.status = 500;
-      ctx.body = 'Internal server error';
+      ctx.message = 'Internal server error';
     }
   })
   .get('/:boardId/tasks/:id', (ctx) => {
@@ -26,7 +26,7 @@ export default router
       }
     } catch (error) {
       ctx.status = 500;
-      ctx.body = 'Internal server error';
+      ctx.message = 'Internal server error';
     }
   })
   .post('/:boardId/tasks', (ctx) => {
@@ -47,7 +47,7 @@ export default router
       ctx.body = task;
     } catch (error) {
       ctx.status = 500;
-      ctx.body = 'Internal server error';
+      ctx.message = 'Internal server error';
     }
   })
   .put('/:boardId/tasks/:id', (ctx) => {
@@ -58,7 +58,7 @@ export default router
       ctx.body = task;
     } catch (error) {
       ctx.status = 500;
-      ctx.body = 'Internal server error';
+      ctx.message = 'Internal server error';
     }
   })
   .delete('/:boardId/tasks/:id', (ctx) => {
@@ -72,6 +72,6 @@ export default router
       }
     } catch (error) {
       ctx.status = 500;
-      ctx.body = 'Internal server error';
+      ctx.message = 'Internal server error';
     }
   });

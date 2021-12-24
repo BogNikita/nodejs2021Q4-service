@@ -47,6 +47,7 @@
     "no-underscore-dangle": "off",
     "import/prefer-default-export": "off",
     "@typescript-eslint/no-explicit-any": 2,
-    "node/no-missing-import": "off"
+    "node/no-missing-import": "off",
+    "class-methods-use-this": "off"
   }
 }
