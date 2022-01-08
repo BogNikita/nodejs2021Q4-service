@@ -6,12 +6,12 @@ const router = new Router();
 
 export default router
   .get('/', (ctx) => {
-    try {
+    try {      
       const users = usersService.getAll();
       ctx.body = users.map((item) => User.toResponse(item));
     } catch (error) {
       ctx.status = 500;
-      ctx.body = 'Internal server error';
+      ctx.message = 'Internal server error';
     }
   })
   .get('/:id', (ctx) => {
@@ -26,7 +26,7 @@ export default router
       }
     } catch (error) {
       ctx.status = 500;
-      ctx.body = 'Internal server error';
+      ctx.message = 'Internal server error';
     }
   })
   .post('/', (ctx) => {
@@ -37,7 +37,7 @@ export default router
       ctx.body = User.toResponse(user);
     } catch (error) {
       ctx.status = 500;
-      ctx.body = 'Internal server error';
+      ctx.message = 'Internal server error';
     }
   })
   .put('/:id', (ctx) => {
@@ -48,7 +48,7 @@ export default router
       ctx.body = User.toResponse(user);
     } catch (error) {
       ctx.status = 500;
-      ctx.body = 'Internal server error';
+      ctx.message = 'Internal server error';
     }
   })
   .delete('/:id', (ctx) => {
@@ -62,6 +62,6 @@ export default router
       }
     } catch (error) {
       ctx.status = 500;
-      ctx.body = 'Internal server error';
+      ctx.message = 'Internal server error';
     }
   });
