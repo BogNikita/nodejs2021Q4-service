@@ -1,26 +1,25 @@
 const Router = require('koa-router');
-const User = require('./user.model');
-const usersService = require('./user.service');
+const tasksService = require('./task.service');
 
 const router = new Router();
 
 router
-  .get('/', async (ctx) => {
+  .get('/:boardId/tasks', async (ctx) => {
     try {
-      const users = await usersService.getAll();
-      ctx.body = users.map(User.toResponse);
+      const { boardId } = ctx.params;
+      const tasks = await tasksService.getAll(boardId);
+      ctx.body = tasks;
     } catch (error) {
       ctx.status = 500;
       ctx.body = 'Internal server error';
     }
   })
-  .get('/:id', async (ctx) => {
+  .get('/:boardId/tasks/:id', async (ctx) => {
     try {
       const { id } = ctx.params;
-      const user = await usersService.getUser(id);
-      if (user) {
-        ctx.status = 200;
-        ctx.body = User.toResponse(user);
+      const task = await tasksService.getTask(id);
+      if (task) {
+        ctx.body = task;
       } else {
         ctx.status = 404;
       }
@@ -29,32 +28,40 @@ router
       ctx.body = 'Internal server error';
     }
   })
-  .post('/', async (ctx) => {
+  .post('/:boardId/tasks', async (ctx) => {
     try {
-      const { name, login, password } = ctx.request.body;
-      const user = await usersService.createUser({ name, login, password });
+      const { boardId } = ctx.params;
+      const { title, order, description, userId, columnId } = ctx.request.body;
+      const task = await tasksService.createTask({
+        title,
+        order,
+        description,
+        userId,
+        boardId,
+        columnId,
+      });
       ctx.status = 201;
-      ctx.body = User.toResponse(user);
+      ctx.body = task;
     } catch (error) {
       ctx.status = 500;
       ctx.body = 'Internal server error';
     }
   })
-  .put('/:id', async (ctx) => {
+  .put('/:boardId/tasks/:id', async (ctx) => {
     try {
       const { id } = ctx.params;
       const { body } = ctx.request;
-      const user = await usersService.updateUser(id, body);
-      ctx.body = User.toResponse(user);
+      const task = await tasksService.updateTask(id, body);
+      ctx.body = task;
     } catch (error) {
       ctx.status = 500;
       ctx.body = 'Internal server error';
     }
   })
-  .delete('/:id', async (ctx) => {
+  .delete('/:boardId/tasks/:id', async (ctx) => {
     try {
       const { id } = ctx.params;
-      const result = await usersService.deleteUser(id);
+      const result = await tasksService.deleteTask(id);
       if (result) {
         ctx.status = 204;
       } else {
