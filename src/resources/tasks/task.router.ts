@@ -1,23 +1,24 @@
-const Router = require('koa-router');
-const tasksService = require('./task.service');
+import Router from 'koa-router';
+import { ITask } from './task.model';
+import tasksService from './task.service';
 
 const router = new Router();
 
-router
-  .get('/:boardId/tasks', async (ctx) => {
+export default router
+  .get('/:boardId/tasks', (ctx) => {
     try {
       const { boardId } = ctx.params;
-      const tasks = await tasksService.getAll(boardId);
+      const tasks = tasksService.getAll(boardId);
       ctx.body = tasks;
     } catch (error) {
       ctx.status = 500;
       ctx.body = 'Internal server error';
     }
   })
-  .get('/:boardId/tasks/:id', async (ctx) => {
+  .get('/:boardId/tasks/:id', (ctx) => {
     try {
       const { id } = ctx.params;
-      const task = await tasksService.getTask(id);
+      const task = tasksService.getTask(id);
       if (task) {
         ctx.body = task;
       } else {
@@ -28,11 +29,13 @@ router
       ctx.body = 'Internal server error';
     }
   })
-  .post('/:boardId/tasks', async (ctx) => {
+  .post('/:boardId/tasks', (ctx) => {
     try {
       const { boardId } = ctx.params;
-      const { title, order, description, userId, columnId } = ctx.request.body;
-      const task = await tasksService.createTask({
+      const { title, order, description, userId, columnId } = <ITask>(
+        ctx.request.body
+      );
+      const task = tasksService.createTask({
         title,
         order,
         description,
@@ -47,21 +50,21 @@ router
       ctx.body = 'Internal server error';
     }
   })
-  .put('/:boardId/tasks/:id', async (ctx) => {
+  .put('/:boardId/tasks/:id', (ctx) => {
     try {
       const { id } = ctx.params;
-      const { body } = ctx.request;
-      const task = await tasksService.updateTask(id, body);
+      const data = <ITask>ctx.request.body;
+      const task = tasksService.updateTask(id, data);
       ctx.body = task;
     } catch (error) {
       ctx.status = 500;
       ctx.body = 'Internal server error';
     }
   })
-  .delete('/:boardId/tasks/:id', async (ctx) => {
+  .delete('/:boardId/tasks/:id', (ctx) => {
     try {
       const { id } = ctx.params;
-      const result = await tasksService.deleteTask(id);
+      const result = tasksService.deleteTask(id);
       if (result) {
         ctx.status = 204;
       } else {
@@ -72,5 +75,3 @@ router
       ctx.body = 'Internal server error';
     }
   });
-
-module.exports = () => router.routes();

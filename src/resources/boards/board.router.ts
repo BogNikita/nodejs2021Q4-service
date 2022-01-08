@@ -1,22 +1,23 @@
-const Router = require('koa-router');
-const boardsService = require('./board.service');
+import Router from 'koa-router';
+import { IBoard } from './board.model';
+import boardsService from './board.service';
 
 const router = new Router();
 
-router
-  .get('/', async (ctx) => {
+export default router
+  .get('/', (ctx) => {
     try {
-      const boards = await boardsService.getAll();
+      const boards = boardsService.getAll();
       ctx.body = boards;
     } catch (error) {
       ctx.status = 500;
       ctx.body = 'Internal server error';
     }
   })
-  .get('/:id', async (ctx) => {
+  .get('/:id', (ctx) => {
     try {
       const { id } = ctx.params;
-      const board = await boardsService.getBoard(id);
+      const board = boardsService.getBoard(id);
       if (board) {
         ctx.body = board;
       } else {
@@ -27,10 +28,10 @@ router
       ctx.body = 'Internal server error';
     }
   })
-  .post('/', async (ctx) => {
+  .post('/', (ctx) => {
     try {
-      const { title, columns } = ctx.request.body;
-      const board = await boardsService.createBoard({ title, columns });
+      const { title, columns } = <IBoard>ctx.request.body;
+      const board = boardsService.createBoard({ title, columns });
       ctx.status = 201;
       ctx.body = board;
     } catch (error) {
@@ -38,21 +39,21 @@ router
       ctx.body = 'Internal server error';
     }
   })
-  .put('/:id', async (ctx) => {
+  .put('/:id', (ctx) => {
     try {
       const { id } = ctx.params;
-      const { body } = ctx.request;
-      const board = await boardsService.updateBoard(id, body);
+      const data = <IBoard>ctx.request.body;
+      const board = boardsService.updateBoard(id, data);
       ctx.body = board;
     } catch (error) {
       ctx.status = 500;
       ctx.body = 'Internal server error';
     }
   })
-  .delete('/:id', async (ctx) => {
+  .delete('/:id', (ctx) => {
     try {
       const { id } = ctx.params;
-      const result = await boardsService.deleteBoard(id);
+      const result = boardsService.deleteBoard(id);
       if (result) {
         ctx.status = 204;
       } else {
@@ -63,5 +64,3 @@ router
       ctx.body = 'Internal server error';
     }
   });
-
-module.exports = () => router.routes();
