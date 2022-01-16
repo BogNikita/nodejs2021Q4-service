@@ -11,8 +11,6 @@ export default router
       const tasks = await tasksService.getAll(boardId);
       ctx.body = tasks;
     } catch (error) {
-      console.log(error);
-      
       ctx.status = 500;
       ctx.message = 'Internal server error';
     }
@@ -47,7 +45,7 @@ export default router
       });
       ctx.status = 201;
       ctx.body = task;
-    } catch (error) {      
+    } catch (error) {
       ctx.status = 500;
       ctx.message = 'Internal server error';
     }

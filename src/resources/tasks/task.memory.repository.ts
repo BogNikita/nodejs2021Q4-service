@@ -95,8 +95,6 @@ const deleteTask = async (id: string) => {
 const clearUserIdTask = async (id: string) => {
   const tasks = await getRepository(Task).find({ userId: id });
   const clearIdTasks = tasks.map((item) => ({ ...item, userId: null }));
-  console.log(clearIdTasks);
-  
   await getRepository(Task).save(clearIdTasks);
 };
 
