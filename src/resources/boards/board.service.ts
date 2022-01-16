@@ -1,5 +1,5 @@
 import boardRepo from './board.memory.repository';
-import { IBoard } from './board.model';
+import { IBoards } from './board.model';
 
 /**
  * Call function which return all boards
@@ -20,7 +20,7 @@ const getBoard = (id: string) => boardRepo.getBoard(id);
  * columns - string
  * @returns new board
  */
-const createBoard = (data: IBoard) => boardRepo.createBoard(data);
+const createBoard = (data: IBoards) => boardRepo.createBoard(data);
 
 /**
  * Call function which return update board by id
@@ -29,7 +29,7 @@ const createBoard = (data: IBoard) => boardRepo.createBoard(data);
  * columns - string
  * @returns updated task
  */
-const updateBoard = (id: string, board: IBoard) =>
+const updateBoard = (id: string, board: IBoards) =>
   boardRepo.updateBoard(id, board);
 
 /**
