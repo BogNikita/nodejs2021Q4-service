@@ -10,12 +10,13 @@ app.listen(PORT, () =>
   console.log(`App is running on http://localhost:${PORT}`)
 );
 
-(async () => {
-  try {
-    await new Promise((resolve) => setTimeout(resolve, 10000));
-    await createConnection(ORMConfig);
-    console.log('Connect to db');
-  } catch (error) {
-    console.log(error);
-  }
+(() => {
+  const int = setInterval(() => {
+    createConnection(ORMConfig).then(() => {
+      clearInterval(int);
+      console.log('Connect to db');
+    }).catch(() => {
+      console.log('Waiting create db...');
+    });
+  }, 3000);
 })();
