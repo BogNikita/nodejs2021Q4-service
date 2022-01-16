@@ -1,0 +1,38 @@
+version: '3.0'
+
+networks:
+  rest:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.24.0.0/16
+
+services:
+  rest-service: 
+    image: rest-application
+    restart: on-failure
+    build: .
+    environment:
+      - PORT=${PORT}
+    depends_on:
+      - postgres
+    networks:
+      - rest
+    ports: 
+      - "${PORT}:${PORT}"
+    volumes:
+      - ./src:/usr/app/src
+      - ./errorLogs.txt:/usr/app/errorLogs.txt
+      - ./logs.txt:/usr/app/logs.txt
+  
+  postgres: 
+    image: postgres
+    build: /database
+    environment:
+      - DB_PORT=${DB_PORT}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports: 
+      - "${DB_PORT}:${DB_PORT}"
+    networks:
+      - rest
+  
