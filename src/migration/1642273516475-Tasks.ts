@@ -2,7 +2,6 @@ import {
   MigrationInterface,
   QueryRunner,
   Table,
-//   TableForeignKey,
 } from 'typeorm';
 
 export class Tasks1642273516475 implements MigrationInterface {
@@ -48,32 +47,6 @@ export class Tasks1642273516475 implements MigrationInterface {
         ],
       })
     );
-//     const foreignKeyUser = new TableForeignKey({
-//       columnNames: ['userId'],
-//       referencedColumnNames: ['id'],
-//       referencedTableName: 'users',
-//       onDelete: 'CASCADE',
-//     });
-
-//     const foreignKeyBoard = new TableForeignKey({
-//       columnNames: ['boardId'],
-//       referencedColumnNames: ['id'],
-//       referencedTableName: 'boards',
-//       onDelete: 'CASCADE',
-//     });
-
-//     const foreignKeyColumn = new TableForeignKey({
-//       columnNames: ['columnId'],
-//       referencedColumnNames: ['id'],
-//       referencedTableName: 'columns',
-//       onDelete: 'CASCADE',
-//     });
-
-//     await queryRunner.createForeignKeys('tasks', [
-//       foreignKeyUser,
-//       foreignKeyBoard,
-//       foreignKeyColumn,
-//     ]);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
