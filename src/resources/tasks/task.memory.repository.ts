@@ -1,20 +1,25 @@
+import { getRepository } from 'typeorm';
 import { Task, ITask } from './task.model';
 
-let db: ITask[] = [];
 /**
  * Return all tasks by board id
  * @param boardId search string
  * @returns array tasks
  */
-const getAll = (boardId: string) =>
-  db.filter((task) => task.boardId === boardId);
+const getAll = async (boardId: string) => {
+  const tasks = await getRepository(Task).find({ boardId });
+  return tasks;
+};
 
 /**
  * Return task by id
  * @param id search string
  * @returns find task
  */
-const getTask = (id: string) => db.find((task) => task.id === id);
+const getTask = async (id: string) => {
+  const task = await getRepository(Task).findOne(id);
+  return task;
+};
 
 /**
  * Return new task
@@ -27,7 +32,7 @@ const getTask = (id: string) => db.find((task) => task.id === id);
   userId?: null | string;
  * @returns new task
  */
-const createTask = ({
+const createTask = async ({
   title,
   order,
   description,
@@ -35,15 +40,15 @@ const createTask = ({
   boardId,
   columnId,
 }: ITask) => {
-  const newTask = new Task({
+  const newTask = new Task(
     title,
     order,
     description,
-    userId,
     boardId,
     columnId,
-  });
-  db.push(newTask);
+    userId
+  );
+  await getRepository(Task).save(newTask);
   return newTask;
 };
 
@@ -58,10 +63,14 @@ const createTask = ({
   userId?: null | string;
  * @returns updated task
  */
-const updateTask = (id: string, data: ITask) => {
-  const findTaskIndex = db.findIndex((task) => task.id === id);
-  db[findTaskIndex] = { ...db[findTaskIndex], ...data };
-  return db[findTaskIndex];
+const updateTask = async (id: string, data: ITask) => {
+  let task = await getRepository(Task).findOne(id);
+  if (task) {
+    task = { ...task, ...data };
+    await getRepository(Task).save(task);
+    return task;
+  }
+  return false;
 };
 
 /**
@@ -69,13 +78,13 @@ const updateTask = (id: string, data: ITask) => {
  * @param id search string
  * @returns boolean value
  */
-const deleteTask = (id: string) => {
-  const findTaskIndex = db.findIndex((task) => task.id === id);
-  if (findTaskIndex === -1) {
-    return false;
+const deleteTask = async (id: string) => {
+  const task = await getRepository(Task).findOne(id);
+  if (task) {
+    await getRepository(Task).remove(task);
+    return true;
   }
-  db.splice(findTaskIndex, 1);
-  return true;
+  return false;
 };
 
 /**
@@ -83,13 +92,12 @@ const deleteTask = (id: string) => {
  * @param id search string
  * @returns boolean value
  */
-const clearUserIdTask = (id: string): void => {
-  db = db.map((task) => {
-    if (task.userId === id) {
-      return { ...task, userId: null };
-    }
-    return task;
-  });
+const clearUserIdTask = async (id: string) => {
+  const tasks = await getRepository(Task).find({ userId: id });
+  const clearIdTasks = tasks.map((item) => ({ ...item, userId: null }));
+  console.log(clearIdTasks);
+  
+  await getRepository(Task).save(clearIdTasks);
 };
 
 /**
@@ -97,8 +105,9 @@ const clearUserIdTask = (id: string): void => {
  * @param id search string
  * @returns boolean value
  */
-const clearBoardTasks = (id: string): void => {
-  db = db.filter((task) => task.boardId !== id);
+const clearBoardTasks = async (id: string) => {
+  const tasks = await getRepository(Task).find({ boardId: id });
+  await getRepository(Task).remove(tasks);
 };
 
 export default {

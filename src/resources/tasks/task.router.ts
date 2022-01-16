@@ -5,20 +5,22 @@ import tasksService from './task.service';
 const router = new Router();
 
 export default router
-  .get('/:boardId/tasks', (ctx) => {
+  .get('/:boardId/tasks', async (ctx) => {
     try {
       const { boardId } = ctx.params;
-      const tasks = tasksService.getAll(boardId);
+      const tasks = await tasksService.getAll(boardId);
       ctx.body = tasks;
     } catch (error) {
+      console.log(error);
+      
       ctx.status = 500;
       ctx.message = 'Internal server error';
     }
   })
-  .get('/:boardId/tasks/:id', (ctx) => {
+  .get('/:boardId/tasks/:id', async (ctx) => {
     try {
       const { id } = ctx.params;
-      const task = tasksService.getTask(id);
+      const task = await tasksService.getTask(id);
       if (task) {
         ctx.body = task;
       } else {
@@ -29,13 +31,13 @@ export default router
       ctx.message = 'Internal server error';
     }
   })
-  .post('/:boardId/tasks', (ctx) => {
+  .post('/:boardId/tasks', async (ctx) => {
     try {
       const { boardId } = ctx.params;
       const { title, order, description, userId, columnId } = <ITask>(
         ctx.request.body
       );
-      const task = tasksService.createTask({
+      const task = await tasksService.createTask({
         title,
         order,
         description,
@@ -45,26 +47,26 @@ export default router
       });
       ctx.status = 201;
       ctx.body = task;
-    } catch (error) {
+    } catch (error) {      
       ctx.status = 500;
       ctx.message = 'Internal server error';
     }
   })
-  .put('/:boardId/tasks/:id', (ctx) => {
+  .put('/:boardId/tasks/:id', async (ctx) => {
     try {
       const { id } = ctx.params;
       const data = <ITask>ctx.request.body;
-      const task = tasksService.updateTask(id, data);
+      const task = await tasksService.updateTask(id, data);
       ctx.body = task;
     } catch (error) {
       ctx.status = 500;
       ctx.message = 'Internal server error';
     }
   })
-  .delete('/:boardId/tasks/:id', (ctx) => {
+  .delete('/:boardId/tasks/:id', async (ctx) => {
     try {
       const { id } = ctx.params;
-      const result = tasksService.deleteTask(id);
+      const result = await tasksService.deleteTask(id);
       if (result) {
         ctx.status = 204;
       } else {
