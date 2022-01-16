@@ -15,7 +15,9 @@
     "test:auth": "cross-env DEBUG=rs:* TEST_MODE=auth jest --noStackTrace",
     "docker-compose-down": "docker-compose -f docker-compose.yml down",
     "docker-compose-up:dev": "docker-compose -f docker-compose.yml up -d --build rest-service",
-    "docker:dev": "npm run docker-compose-down && npm run docker-compose-up:dev && docker-compose logs -f rest-service"
+    "docker:dev": "npm run docker-compose-down && npm run docker-compose-up:dev && docker-compose logs -f rest-service",
+    "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js  --config ./src/ormconfig.ts",
+    "db:migrate": "docker exec -it nodejs2021q4-service_rest-service_1 /bin/sh -c \"npm run typeorm migration:run\""
   },
   "keywords": [
     "rs",
@@ -54,12 +56,16 @@
     "koa-bodyparser": "^4.3.0",
     "koa-router": "^10.1.1",
     "koa2-swagger-ui": "^5.3.0",
+    "pg": "^8.7.1",
+    "reflect-metadata": "^0.1.13",
+    "typeorm": "^0.2.41",
     "uuid": "8.3.2",
     "yamljs": "0.3.0"
   },
   "devDependencies": {
     "@types/koa-bodyparser": "^4.3.5",
     "@types/koa-router": "^7.4.4",
+    "@types/node": "^17.0.8",
     "@types/uuid": "^8.3.3",
     "@types/yamljs": "^0.2.31",
     "@typescript-eslint/eslint-plugin": "^5.6.0",
