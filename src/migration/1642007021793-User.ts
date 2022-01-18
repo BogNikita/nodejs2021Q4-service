@@ -1,4 +1,6 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+import { generateHash } from '../common/hash';
+import { User } from '../resources/users/user.model';
 
 export class User1642007021793 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -28,6 +30,9 @@ export class User1642007021793 implements MigrationInterface {
         ],
       })
     );
+    const pass = await generateHash('admin');
+    const admin = new User('admin', 'admin', pass);
+    await queryRunner.manager.save(admin);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
