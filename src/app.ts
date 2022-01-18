@@ -10,6 +10,8 @@ import boardRouter from './resources/boards/board.router';
 import tasksRouter from './resources/tasks/task.router';
 import logger from './middleware/logger';
 import { Logger } from './logger';
+import authenticateToken from './middleware/jwt';
+import loginRouter from './resources/login/login.router';
 
 const app = new Koa();
 const router = new Router();
@@ -18,18 +20,21 @@ const spec = YAML.load(path.join(__dirname, '../doc/api.yaml')) as
   | Record<string, unknown>
   | undefined;
 
+app.use(koaBody());
+app.use(bodyparser());
+app.use(logger);
+app.use(authenticateToken());
+
 router.get(
   '/doc',
   koaSwagger({ routePrefix: false, swaggerOptions: { spec } })
 );
 
+router.use('/login', loginRouter.routes());
 router.use('/users', userRouter.routes());
 router.use('/boards', boardRouter.routes());
 router.use('/boards', tasksRouter.routes());
 
-app.use(koaBody());
-app.use(bodyparser());
-app.use(logger);
 app.use(router.routes());
 app.use(router.allowedMethods());
 
