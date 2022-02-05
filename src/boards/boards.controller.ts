@@ -31,13 +31,13 @@ export class BoardsController {
   }
 
   @Get()
-  findAll() {    
+  findAll() {
     return this.boardsService.findAll();
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    try {      
+    try {
       const board = await this.boardsService.findOne(id);
 
       if (board) {
