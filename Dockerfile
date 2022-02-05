@@ -9,4 +9,5 @@ WORKDIR /usr/app
 COPY --from=build /usr/app .
 COPY . .
 EXPOSE 4000
-CMD ["npm", "start"]
+RUN npm run build
+CMD ["npm", "run", "start:dev"]
