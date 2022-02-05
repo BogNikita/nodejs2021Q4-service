@@ -12,6 +12,9 @@ services:
     environment:
       - PORT=${PORT}
       - DB_HOST=${DB_HOST}
+      - SALT=${SALT}
+      - PASSWORD_HASH=${PASSWORD_HASH}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
     depends_on:
       - postgres
     networks:

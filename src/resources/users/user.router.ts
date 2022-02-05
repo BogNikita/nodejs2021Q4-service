@@ -1,4 +1,5 @@
 import Router from 'koa-router';
+import { generateHash } from '../../common/hash';
 import { IUser, User } from './user.model';
 import usersService from './user.service';
 
@@ -32,7 +33,12 @@ export default router
   .post('/', async (ctx) => {
     try {
       const { name, login, password } = <IUser>ctx.request.body;
-      const user = await usersService.createUser({ name, login, password });
+      const hashPass = await generateHash(password);
+      const user = await usersService.createUser({
+        name,
+        login,
+        password: hashPass,
+      });
       ctx.status = 201;
       ctx.body = User.toResponse(user);
     } catch (error) {
