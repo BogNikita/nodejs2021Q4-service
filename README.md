@@ -72,4 +72,13 @@ To run only specific test suite with authorization (users, boards or tasks)
 ```
 npm run test:auth <suite name>
 ```
+```
+artillery test 
+
+## Express
+![express test](./artillery/express.png)
+
+## Fastify
+![Fastify test](./artillery/fastify.png)
+```
 
