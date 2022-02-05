@@ -15,6 +15,7 @@ services:
       - SALT=${SALT}
       - PASSWORD_HASH=${PASSWORD_HASH}
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - USE_FASTIFY=${USE_FASTIFY}
     depends_on:
       - postgres
     networks:
@@ -23,7 +24,6 @@ services:
       - "${PORT}:${PORT}"
     volumes:
       - ./src:/usr/app/src
-      - ./logs:/usr/app/logs
   
   postgres: 
     image: postgres
