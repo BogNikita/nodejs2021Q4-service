@@ -1,0 +1,64 @@
+config:
+  target: "http://localhost:4000"
+  phases:
+    - duration: 100
+      arrivalRate: 10
+scenarios:
+  - name: "Base Script"
+    flow:
+      - get:
+          url: "/"
+      - post:
+          url: "/login"
+          json:
+            login: "admin"
+            password: "admin"
+          capture:
+            - json: "$.token"
+              as: "token"
+      - post:
+          url: "/users"
+          json:
+            name: "admin1"
+            login: "admin1"
+            password: "admin1"
+          capture:
+            - json: "$.id"
+              as: "id"
+          headers:
+            authorization: "Bearer {{ token }}"
+      - post:
+          url: "/users"
+          json:
+            name: "admin2"
+            login: "admin2"
+            password: "admin2"
+          capture:
+            - json: "$.id"
+              as: "id2"
+          headers:
+            authorization: "Bearer {{ token }}"
+      - put:
+          url: "/users/{{ id }}"
+          json:
+            name: "change admin2"
+            login: "change admin2"
+            password: "change admin2"
+          headers:
+            authorization: "Bearer {{ token }}"
+      - get:
+          url: "/users"
+          headers:
+            authorization: "Bearer {{ token }}"
+      - delete:
+          url: "/users/{{ id }}"
+          headers:
+            authorization: "Bearer {{ token }}"
+      - delete:
+          url: "/users/{{ id2 }}"
+          headers:
+            authorization: "Bearer {{ token }}"
+      - get:
+          url: "/users"
+          headers:
+            authorization: "Bearer {{ token }}"
