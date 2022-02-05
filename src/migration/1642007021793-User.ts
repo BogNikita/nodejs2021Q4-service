@@ -1,6 +1,5 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
-import { generateHash } from '../common/hash';
-import { User } from '../resources/users/user.model';
+import { User } from '../users/entities/user.entity';
 
 export class User1642007021793 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -13,6 +12,9 @@ export class User1642007021793 implements MigrationInterface {
             type: 'uuid',
             isUnique: true,
             isPrimary: true,
+            isGenerated: true,
+            generationStrategy: 'uuid',
+            default: 'uuid_generate_v4()',
           },
           {
             name: 'name',
@@ -28,10 +30,12 @@ export class User1642007021793 implements MigrationInterface {
             isNullable: true,
           },
         ],
-      })
+      }),
     );
-    const pass = await generateHash('admin');
-    const admin = new User('admin', 'admin', pass);
+    const admin = new User();
+    admin.name = 'admin';
+    admin.password = 'admin';
+    admin.login = 'admin';
     await queryRunner.manager.save(admin);
   }
 

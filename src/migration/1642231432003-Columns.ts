@@ -29,10 +29,10 @@ export class Columns1642231432003 implements MigrationInterface {
           {
             name: 'boardId',
             type: 'uuid',
-            isNullable: true
+            isNullable: true,
           },
         ],
-      })
+      }),
     );
 
     const foreignKey = new TableForeignKey({
@@ -41,7 +41,7 @@ export class Columns1642231432003 implements MigrationInterface {
       referencedTableName: 'boards',
       onDelete: 'CASCADE',
     });
-    
+
     await queryRunner.createForeignKey('columns', foreignKey);
   }
 

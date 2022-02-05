@@ -1,8 +1,4 @@
-import {
-  MigrationInterface,
-  QueryRunner,
-  Table,
-} from 'typeorm';
+import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
 export class Tasks1642273516475 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -15,6 +11,9 @@ export class Tasks1642273516475 implements MigrationInterface {
             type: 'uuid',
             isUnique: true,
             isPrimary: true,
+            isGenerated: true,
+            generationStrategy: 'uuid',
+            default: 'uuid_generate_v4()',
           },
           {
             name: 'title',
@@ -45,7 +44,7 @@ export class Tasks1642273516475 implements MigrationInterface {
             default: null,
           },
         ],
-      })
+      }),
     );
   }
 

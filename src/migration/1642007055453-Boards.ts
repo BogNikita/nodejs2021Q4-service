@@ -10,13 +10,16 @@ export class Boards1642007055453 implements MigrationInterface {
             name: 'id',
             type: 'uuid',
             isPrimary: true,
+            isGenerated: true,
+            generationStrategy: 'uuid',
+            default: 'uuid_generate_v4()',
           },
           {
             name: 'title',
             type: 'varchar',
           },
         ],
-      })
+      }),
     );
   }
 
