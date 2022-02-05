@@ -32,7 +32,16 @@ For more information about OpenAPI/Swagger please visit https://swagger.io/.
 - Docker - [Download & Install Docker](https://www.docker.com/).
 
 ```
-npm docker:dev
+1. npm run docker:dev - создание и запуск контейнеров 
+```
+```
+2. Дождаться коннекта с базой(сообщение в консоле **Connect to db**)
+```
+```
+3. npm run db:migrate - запуск миграций 
+```
+```
+4. npm run test - запуск тестов 
 ```
 After starting the app on port (4000 as default) you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.

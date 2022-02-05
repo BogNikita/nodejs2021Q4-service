@@ -1,4 +1,5 @@
 import fs from 'fs';
+import path from 'path';
 import { promisify } from 'util';
 
 const writeFilePromise = promisify(fs.writeFile);
@@ -77,12 +78,12 @@ export class Logger {
     console.log(data);
 
     if (this.isError) {
-      await writeFilePromise('errorLogs.txt', data, {
+      await writeFilePromise(path.join(__dirname, '..', '..', '/logs', 'errorLogs.txt'), data, {
         flag: 'a',
         encoding: 'utf8',
       });
     } else {
-      await writeFilePromise('logs.txt', data, { flag: 'a', encoding: 'utf8' });
+      await writeFilePromise(path.join(__dirname, '..', '..', '/logs', 'logs.txt'), data, { flag: 'a', encoding: 'utf8' });
     }
   }
 }

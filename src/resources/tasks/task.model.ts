@@ -1,31 +1,40 @@
 import { v1 } from 'uuid';
+import { Entity, Column, PrimaryColumn } from 'typeorm';
 
 export interface ITask {
   title: string;
-  order: string;
+  order: number;
   description: string;
   boardId: string;
-  columnId: string;
+  columnId: string | null;
   id?: string;
-  userId?: null | string;
+  userId: null | string;
 }
 /**
  * Task class create new task
  */
+@Entity({ name: 'tasks' })
 export class Task implements ITask {
+  @PrimaryColumn('uuid')
   id: string;
 
+  @Column()
   title: string;
 
-  order: string;
+  @Column()
+  order: number;
 
+  @Column()
   description: string;
 
+  @Column('uuid')
   boardId: string;
 
-  columnId: string;
+  @Column({ type: 'int', nullable: true })
+  columnId: string | null;
 
-  userId?: null | string;
+  @Column({ type: 'uuid', nullable: true })
+  userId: string | null;
 
   /**
    * @constructor create new task
@@ -33,23 +42,23 @@ export class Task implements ITask {
    * title - string default "Task"
    * order - string default "desc"
    * boardId - string
-   * userId - string
+   * userId - string | null
    * columnId - string
    */
-  constructor({
-    title = 'Task',
-    order = 'desc',
-    description = 'task description',
-    boardId,
-    userId,
-    columnId,
-  }: ITask) {
+  constructor(
+    title: string,
+    order: number,
+    description: string,
+    boardId: string,
+    columnId: string | null = null,
+    userId: string | null = null
+  ) {
     this.id = v1();
     this.title = title;
     this.order = order;
     this.description = description;
-    this.userId = userId;
     this.boardId = boardId;
     this.columnId = columnId;
+    this.userId = userId;
   }
 }

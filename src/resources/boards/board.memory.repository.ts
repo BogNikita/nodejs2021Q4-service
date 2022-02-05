@@ -1,29 +1,41 @@
-import { IBoard, Board } from './board.model';
+import { getRepository } from 'typeorm';
+import { IBoards, Board } from './board.model';
 import task from '../tasks/task.memory.repository';
-
-const db: IBoard[] = [];
+import { Columns } from '../columns/column.model';
 
 /**
  * Return all board
  * @returns array board
  */
-const getAll = () => db;
+const getAll = async () => {
+  const boards = await getRepository(Board).find({ relations: ['columns'] });
+  return boards;
+};
 
 /**
  * Return board by id
  * @param boardId search string
  * @returns array board
  */
-const getBoard = (id: string) => db.find((board) => board.id === id);
+const getBoard = async (id: string) => {
+  const board = await getRepository(Board).findOne(id, {
+    relations: ['columns'],
+  });
+  return board;
+};
 
 /**
  * Create new board
  * @param board object include field title - string columns - string
  * @returns new board
  */
-const createBoard = ({ title, columns }: IBoard) => {
-  const newBoard = new Board({ title, columns });
-  db.push(newBoard);
+const createBoard = async ({ title, columns }: IBoards) => {
+  const newBoard = new Board(title);
+  const newColumns = columns.map((item) => new Columns(item.title, item.order));
+  newBoard.columns = newColumns;
+
+  await getRepository(Columns).save(newColumns);
+  await getRepository(Board).save(newBoard);
   return newBoard;
 };
 
@@ -33,10 +45,16 @@ const createBoard = ({ title, columns }: IBoard) => {
  * @param board object include field title - string columns - string
  * @returns updated board
  */
-const updateBoard = (id: string, data: IBoard) => {
-  const findBoardIndex = db.findIndex((board) => board.id === id);
-  db[findBoardIndex] = { ...db[findBoardIndex], ...data };
-  return db[findBoardIndex];
+const updateBoard = async (id: string, data: IBoards) => {
+  let board = await getRepository(Board).findOne(id, {
+    relations: ['columns'],
+  });
+  if (board) {
+    board = { ...board, ...data };
+    await getRepository(Board).save(board);
+    return board;
+  }
+  return false;
 };
 
 /**
@@ -44,14 +62,14 @@ const updateBoard = (id: string, data: IBoard) => {
  * @param id string for search board
  * @returns boolean value
  */
-const deleteBoard = (id: string) => {
-  const findBoardIndex = db.findIndex((board) => board.id === id);
-  if (findBoardIndex === -1) {
-    return false;
+const deleteBoard = async (id: string) => {
+  const board = await getRepository(Board).findOne(id);
+  if (board) {
+    await getRepository(Board).remove(board);
+    await task.clearBoardTasks(id);
+    return true;
   }
-  db.splice(findBoardIndex, 1);
-  task.clearBoardTasks(id);
-  return true;
+  return false;
 };
 
 export default { getAll, getBoard, createBoard, updateBoard, deleteBoard };

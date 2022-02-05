@@ -1,20 +1,28 @@
 import { v1 } from 'uuid';
+import { Entity, Column, OneToMany, PrimaryColumn } from 'typeorm';
+import { Columns } from '../columns/column.model';
 
-export interface IBoard {
-  id?: string;
+export interface IBoards {
   title: string;
-  columns: string;
+  columns: Columns[];
+  id?: string;
 }
 
 /**
  * Board class create new board
  */
-export class Board implements IBoard {
+@Entity({ name: 'boards' })
+export class Board implements IBoards {
+  @PrimaryColumn('uuid')
   id: string;
 
+  @Column()
   title: string;
 
-  columns: string;
+  @OneToMany(() => Columns, (columns: Columns) => columns.board, {
+    cascade: true,
+  })
+  columns!: Columns[];
 
   /**
    * @constructor create new user
@@ -22,9 +30,8 @@ export class Board implements IBoard {
    * title - string default "Task"
    * columns- string
    */
-  constructor({ title = 'Board', columns = '1' } = {}) {
+  constructor(title: string) {
     this.id = v1();
     this.title = title;
-    this.columns = columns;
   }
 }
